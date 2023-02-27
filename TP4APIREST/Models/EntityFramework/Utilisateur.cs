@@ -30,12 +30,15 @@ namespace TP4APIREST.Models.EntityFramework
         [StringLength(50)]
         public String? Prenom { get; set; }
 
+        [RegularExpression(@"^0[0-9]{9}$", ErrorMessage = "Num de tel pas bon chakal")]
         [Column("utl_mobile", TypeName = "char(10)")]
         public String? Mobile { get; set; }
 
+        [Required]
+        [EmailAddress(ErrorMessage = "Pas bon mon zouzou")]
+        [StringLength(100, MinimumLength = 6, ErrorMessage = "La longueur d’un email doit être comprise entre 6 et 100 caractères.")]
         [Column("utl_mail")]
-        [StringLength(100)]
-        public String? Mail { get; set; } = null!;
+        public String Mail { get; set; } = null!;
 
         [Column("utl_pwd")]
         [StringLength(64)]
@@ -64,7 +67,7 @@ namespace TP4APIREST.Models.EntityFramework
 
         [Required]
         [Column("utl_datecreation")]
-        public DateTime DateCreation { get; set; } = DateTime.Now;
+        public DateTime DateCreation { get; set; } = DateTime.UtcNow;
 
         [InverseProperty(nameof(Notation.UtilisateurNavigation))]
         public virtual ICollection<Notation> NotesUtilisateur { get; set; } = new List<Notation>();
