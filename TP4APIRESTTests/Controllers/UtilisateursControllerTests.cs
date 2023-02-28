@@ -19,17 +19,18 @@ namespace TP4APIREST.Controllers.Tests
 
         public void UtilisateursControllerTest()
         {
-            var builder = new DbContextOptionsBuilder<FilmRatingsDBContext>().UseNpgsql("Server=localhost;port=5432;Database=SeriesDB; uid=postgres; password=postgres;"); // Chaine de connexion à mettre dans les ( )
+            var builder = new DbContextOptionsBuilder<FilmRatingsDBContext>().UseNpgsql("Server=localhost;port=5432;Database=FilmDBv2; uid=postgres; password=postgres;"); // Chaine de connexion à mettre dans les ( )
             _context = new FilmRatingsDBContext(builder.Options);
             _controller = new UtilisateursController(_context);
         }
 
         [TestMethod()]
-        public async void GetUtilisateursTest()
+        public void GetUtilisateursTest()
         {
             UtilisateursControllerTest();
-            var utilisateursv1 = await _context?.Utilisateurs.ToListAsync();
-            var utilisateursv2 = _controller?.GetUtilisateurs().Result;
+            var utilisateursv1 = _context?.Utilisateurs.ToListAsync();
+            _= _controller?.GetUtilisateurs().Result;
+
 
             Assert.IsNotNull(utilisateursv1);
             Assert.IsNotNull(utilisateursv2);

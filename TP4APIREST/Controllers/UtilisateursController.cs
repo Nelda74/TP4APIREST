@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using TP4APIREST.Models.DataManager;
 using TP4APIREST.Models.EntityFramework;
+using TP4APIREST.Models.Repository;
 
 namespace TP4APIREST.Controllers
 {
@@ -13,25 +15,29 @@ namespace TP4APIREST.Controllers
     [ApiController]
     public class UtilisateursController : ControllerBase
     {
-        private readonly FilmRatingsDBContext _context;
+        //private readonly dataRepository dataRepository;
+        //private readonly FilmRatingsDBContext _context;
 
-        public UtilisateursController(FilmRatingsDBContext context)
+        private readonly IDataRepository<Utilisateur> dataRepository;
+        public UtilisateursController(IDataRepository<Utilisateur> dataRepo)
         {
-            _context = context;
+            dataRepository = dataRepo;
         }
 
         // GET: api/Utilisateurs
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Utilisateur>>> GetUtilisateurs()
         {
-            return await _context.Utilisateurs.ToListAsync();
+            //return await _context.Utilisateurs.ToListAsync();
+            return dataRepository.GetAll();
         }
 
         // GET: api/Utilisateurs/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Utilisateur>> GetUtilisateurById(int id)
         {
-            var utilisateur = await _context.Utilisateurs.FindAsync(id);
+            //var utilisateur = await _context.Utilisateurs.FindAsync(id);
+            var utilisateur = dataRepository.GetById(id);
 
             if (utilisateur == null)
             {
@@ -45,7 +51,8 @@ namespace TP4APIREST.Controllers
         [HttpGet("/api/Utilisateur/email/{email}")]
         public async Task<ActionResult<Utilisateur>> GetUtilisateurByEmail(string email)
         {
-            Utilisateur utilisateur = await _context.Utilisateurs.Where(x => x.Mail.ToUpper() == email.ToUpper()).FirstAsync();
+            //Utilisateur utilisateur = await _context.Utilisateurs.Where(x => x.Mail.ToUpper() == email.ToUpper()).FirstAsync();
+            var utilisateur = dataRepository.GetByString(email);
 
             if (utilisateur == null)
             {
@@ -65,25 +72,35 @@ namespace TP4APIREST.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(utilisateur).State = EntityState.Modified;
+            //_context.Entry(utilisateur).State = EntityState.Modified;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!UtilisateurExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            //try
+            //{
+            //    await _context.SaveChangesAsync();
+            //}
+            //catch (DbUpdateConcurrencyException)
+            //{
+            //    if (!UtilisateurExists(id))
+            //    {
+            //        return NotFound();
+            //    }
+            //    else
+            //    {
+            //        throw;
+            //    }
+            //}
 
-            return NoContent();
+            //return NoContent();
+            var userToUpdate = dataRepository.GetById(id);
+            if (userToUpdate == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                dataRepository.Update(userToUpdate.Value, utilisateur);
+                return NoContent();
+            }
         }
 
         // POST: api/Utilisateurs
@@ -92,8 +109,10 @@ namespace TP4APIREST.Controllers
         public async Task<ActionResult<Utilisateur>> PostUtilisateur(Utilisateur utilisateur)
         {
             Console.WriteLine(utilisateur);
-            _context.Utilisateurs.Add(utilisateur);
-            await _context.SaveChangesAsync();
+            //_context.Utilisateurs.Add(utilisateur);
+            //await _context.SaveChangesAsync();
+
+            dataRepository.Add(utilisateur);
 
             return CreatedAtAction("GetUtilisateurById", new { id = utilisateur.UtilisateurId }, utilisateur);
         }
@@ -102,21 +121,23 @@ namespace TP4APIREST.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUtilisateur(int id)
         {
-            var utilisateur = await _context.Utilisateurs.FindAsync(id);
+            var utilisateur = dataRepository.GetById(id);
             if (utilisateur == null)
             {
                 return NotFound();
             }
 
-            _context.Utilisateurs.Remove(utilisateur);
-            await _context.SaveChangesAsync();
+            //_context.Utilisateurs.Remove(utilisateur);
+            //await _context.SaveChangesAsync();
+
+            dataRepository.Delete(utilisateur.Value);
 
             return NoContent();
         }
 
-        private bool UtilisateurExists(int id)
-        {
-            return _context.Utilisateurs.Any(e => e.UtilisateurId == id);
-        }
+        //private bool UtilisateurExists(int id)
+        //{
+        //    return _context.Utilisateurs.Any(e => e.UtilisateurId == id);
+        //}
     }
 }
