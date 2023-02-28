@@ -36,7 +36,7 @@ namespace TP4APIREST.Migrations
                     utl_nom = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     utl_prenom = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
                     utl_mobile = table.Column<string>(type: "char(10)", nullable: true),
-                    utl_mail = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    utl_mail = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
                     utl_pwd = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: true),
                     utl_rue = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
                     utl_cp = table.Column<string>(type: "char(5)", nullable: true),

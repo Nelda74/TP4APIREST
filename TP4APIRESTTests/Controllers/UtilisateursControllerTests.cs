@@ -5,22 +5,35 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TP4APIREST.Models.EntityFramework;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace TP4APIREST.Controllers.Tests
 {
     [TestClass()]
     public class UtilisateursControllerTests
     {
-        [TestMethod()]
+        private FilmRatingsDBContext? _context;
+        private UtilisateursController? _controller;
+
         public void UtilisateursControllerTest()
         {
-            Assert.Fail();
+            var builder = new DbContextOptionsBuilder<FilmRatingsDBContext>().UseNpgsql("Server=localhost;port=5432;Database=SeriesDB; uid=postgres; password=postgres;"); // Chaine de connexion à mettre dans les ( )
+            _context = new FilmRatingsDBContext(builder.Options);
+            _controller = new UtilisateursController(_context);
         }
 
         [TestMethod()]
-        public void GetUtilisateursTest()
+        public async void GetUtilisateursTest()
         {
-            Assert.Fail();
+            UtilisateursControllerTest();
+            var utilisateursv1 = await _context?.Utilisateurs.ToListAsync();
+            var utilisateursv2 = _controller?.GetUtilisateurs().Result;
+
+            Assert.IsNotNull(utilisateursv1);
+            Assert.IsNotNull(utilisateursv2);
+            Assert.AreEqual(utilisateursv2, utilisateursv1);
         }
 
         [TestMethod()]

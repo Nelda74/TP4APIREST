@@ -12,8 +12,8 @@ using TP4APIREST.Models.EntityFramework;
 namespace TP4APIREST.Migrations
 {
     [DbContext(typeof(FilmRatingsDBContext))]
-    [Migration("20230227102630_NewAnnotations1")]
-    partial class NewAnnotations1
+    [Migration("20230228082407_CreationBDFilmRatings")]
+    partial class CreationBDFilmRatings
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
